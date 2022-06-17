@@ -4,9 +4,17 @@ import express from 'express'
 const PORT = 4000
 const app = express() // express 앱 만듬
 
-const handleHome = () => console.log('Sombody is trying to go home.')
 ///// 서버의 request 설정
+// req, res: express한테서 받은 object
+const handleHome = (req, res) => {
+  return res.send('<h1>Hi!!!!!</h1>') // request를 종료시킴
+}
+
+const handleLogin = (req, res) => {
+  return res.send({ message: 'Login Here.' })
+}
 app.get('/', handleHome)
+app.get('/login', handleLogin)
 
 ///// 외부 접속 listen
 const handleListening = () =>
