@@ -2,10 +2,10 @@ import express from 'express'
 
 ///// 서버 만들기
 const PORT = 4000
-const app = express() // express 앱 만듬
+const app = express() // express 앱 만들기
 
 ///// 서버의 request 설정
-// req, res: express한테서 받은 object
+// req, res: express에서 받은 object
 const handleHome = (req, res) => {
   return res.send('<h1>Hi!!!!!</h1>') // request를 종료시킴
 }
