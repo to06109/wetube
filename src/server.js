@@ -10,6 +10,7 @@ const logger = (req, res, next) => {
 };
 const privateMiddleware = (req, res, next) => {
   const url = req.url;
+  console.log(url);
   if (url === "/protected") {
     return res.send("<h1>Not allowed</h1>");
   }
