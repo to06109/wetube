@@ -1,40 +1,30 @@
 import express from "express";
+import morgan from "morgan";
 
-///// 서버 만들기
+// Create server
 const PORT = 4000;
-const app = express(); // express 앱 만들기
+const app = express();
+const logger = morgan("dev");
+app.use(logger); // 미들웨어
 
-const logger = (req, res, next) => {
-  console.log(`${req.method} ${req.url}`); // 어느 함수가 어느 방향으로 가는지 알 수 있음
-  next();
-};
-const privateMiddleware = (req, res, next) => {
-  const url = req.url;
-  console.log(url);
-  if (url === "/protected") {
-    return res.send("<h1>Not allowed</h1>");
-  }
-  console.log("Allowed, you may continue.");
-  next();
-};
+// Create router
+const globalRouter = express.Router();
+const handleHome = (req, res) => res.send("Home");
+globalRouter.get("/", handleHome);
 
-///// 서버의 request 설정
-// req, res: express에서 받은 object
-const handleHome = (req, res) => {
-  return res.end(); // request를 종료시킴
-};
+const userRouter = express.Router();
+const handleEditUder = (req, res) => res.send("Edit User");
+userRouter.get("/edit", handleEditUder);
 
-const handleProtected = (req, res) => {
-  return res.send("Welcome to the private lounge.");
-};
+const videoRouter = express.Router();
+const handleWatchVideo = (req, res) => res.send("Watch Video");
+videoRouter.get("/watch", handleWatchVideo);
 
-app.use(logger);
-app.use(privateMiddleware);
+app.use("/", globalRouter);
+app.use("/videos", videoRouter);
+app.use("/users", userRouter);
 
-app.get("/", handleHome);
-app.get("/protected", handleProtected);
-
-///// 외부 접속 listen
+// Listen external connections
 const handleListening = () =>
   console.log(`Server listening on port http://localhost:${PORT}`);
-app.listen(PORT, handleListening); // (listen할 port, callback)
+app.listen(PORT, handleListening);
