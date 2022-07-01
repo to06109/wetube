@@ -12,18 +12,20 @@
 
 # users router
 
-##### /users/edit -> Edit User
+##### /users/:id -> See User
 
-##### /users/delete -> Delete User
+##### /users/logout -> Logout
+
+##### /users/edit -> Edit MY Profile
+
+##### /users/delete -> Delete MY Profile
 
 # video router
 
-##### /videos/watch -> Watch Video
+##### /videos/:id -> See Video
 
-##### /videos/edit -> Edit Video
+##### /videos/:id/edit -> Edit Video
 
-##### /videos/delete -> Delet Video
+##### /videos/:id/delete -> Delet Video
 
-##### /videos/comments -> Comment on a video
-
-##### /videos/comments/delete -> Delete A Comment of a Video
+##### /videos/upload -> Upload Video
