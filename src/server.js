@@ -6,8 +6,11 @@ import videoRouter from "./routers/videoRouter";
 
 // Create server
 const PORT = 4000;
+
+console.log(process.cwd());
 const app = express();
 const logger = morgan("dev");
+app.set("view engine", "pug"); // 퍼그를 뷰엔진으로 설절
 app.use(logger); // 미들웨어
 
 // Use routers
