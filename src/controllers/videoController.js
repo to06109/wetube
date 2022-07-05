@@ -1,7 +1,31 @@
 export const trendingVideos = (req, res) => {
-  // 가짜 비디오 배열
-  const videos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  // const videos = [];
+  // 가짜 비디오 객체 배열
+  const videos = [
+    {
+      title: "First Video",
+      rating: 5,
+      comments: 2,
+      createdAt: "2 minutes ago",
+      views: 59,
+      id: 1,
+    },
+    {
+      title: "Second Video",
+      rating: 5,
+      comments: 2,
+      createdAt: "2 minutes ago",
+      views: 59,
+      id: 1,
+    },
+    {
+      title: "Third Video",
+      rating: 5,
+      comments: 2,
+      createdAt: "2 minutes ago",
+      views: 59,
+      id: 1,
+    },
+  ];
   return res.render("home", { pageTitle: "Home", videos });
 };
 export const see = (req, res) => res.render("watch");
