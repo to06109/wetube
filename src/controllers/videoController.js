@@ -1,10 +1,9 @@
-const fakeUser = {
-  username: "Yesong",
-  loggedIn: false,
+export const trendingVideos = (req, res) => {
+  // 가짜 비디오 배열
+  const videos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  // const videos = [];
+  return res.render("home", { pageTitle: "Home", videos });
 };
-
-export const trendingVideos = (req, res) =>
-  res.render("home", { pageTitle: "Home", fakeUser: fakeUser }); // view이름, 템플릿에 보낼 변수
 export const see = (req, res) => res.render("watch");
 export const edit = (req, res) => res.render("edit");
 export const search = (req, res) => res.send("Search");

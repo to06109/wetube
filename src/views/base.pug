@@ -1,22 +1,10 @@
 doctype html
 html(lang="ko")
     head
-        // 문자열과 변수를 함께 사용할 때
         title #{pageTitle} | Wetube 
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body
         header 
-            if fakeUser.loggedIn
-                small Hello #{fakeUser.username}
-            nav 
-                ul 
-                    if fakeUser.loggedIn
-                        li
-                                a(href="/logout") Logout
-                    else 
-                        li
-                            a(href="/login") Login
-            // 오직 이 변수만 사용할 때
             h1=pageTitle 
         main
             block content
