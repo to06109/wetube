@@ -46,3 +46,12 @@ export const postEdit = (req, res) => {
   videos[id - 1].title = title; // 동영상 제목 수정해주기
   return res.redirect(`/videos/${id}`); // watch 화면으로 가기
 };
+
+export const getUpload = (req, res) => {
+  return res.render("upload", { pageTitle: "Upload Video" });
+};
+
+export const postUpload = (req, res) => {
+  // here we will add a video to the videos array.
+  return res.redirect("/");
+};
