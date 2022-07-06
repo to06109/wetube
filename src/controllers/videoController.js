@@ -32,9 +32,17 @@ export const trendingVideos = (req, res) => {
 export const watch = (req, res) => {
   const { id } = req.params; // 링크로 id받음
   const video = videos[id - 1]; // 해당 id에 맞는 video 찾음
-  return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
+  return res.render("watch", { pageTitle: `Watching: ${video.title}`, video });
 };
-export const edit = (req, res) => res.render("edit");
-export const search = (req, res) => res.send("Search");
-export const upload = (req, res) => res.send("Upload");
-export const deleteVideo = (req, res) => res.send("Delete Video");
+export const getEdit = (req, res) => {
+  // 수정할 비디오 찾기
+  const { id } = req.params;
+  const video = videos[id - 1];
+  return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
+};
+export const postEdit = (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  videos[id - 1].title = title; // 동영상 제목 수정해주기
+  return res.redirect(`/videos/${id}`); // watch 화면으로 가기
+};
