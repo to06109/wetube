@@ -1,10 +1,21 @@
 import Video from "../models/Video";
 
-export const home = (req, res) => {
-  // callback 함수를 이용
-  Video.find({}, (error, videos) => {
-    return res.render("home", { pageTitle: "Home", videos });
-  });
+// callback 함수를 이용
+/*
+console.log("start")
+Video.find({}, (error, videos) => {
+  if(error){
+    return res.render("server-error");
+  }
+  return res.render("home", { pageTitle: "Home", videos });
+});
+console.log("finished")
+*/
+
+// promise 이용
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
 };
 
 export const watch = (req, res) => {
