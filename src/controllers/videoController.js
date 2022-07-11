@@ -5,9 +5,11 @@ export const home = async (req, res) => {
   return res.render("home", { pageTitle: "Home", videos });
 };
 
-export const watch = (req, res) => {
+export const watch = async (req, res) => {
   const { id } = req.params; // 링크로 id받음
-  return res.render("watch", { pageTitle: `Watching` });
+  // id로 video 찾기
+  const video = await Video.findById(id);
+  return res.render("watch", { pageTitle: video.title, video });
 };
 export const getEdit = (req, res) => {
   // 수정할 비디오 찾기
