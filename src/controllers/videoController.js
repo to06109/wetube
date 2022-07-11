@@ -26,7 +26,6 @@ export const getUpload = (req, res) => {
 
 export const postUpload = async (req, res) => {
   const { title, description, hashtags } = req.body;
-
   // video document 생성
   try {
     await Video.create({
@@ -36,6 +35,7 @@ export const postUpload = async (req, res) => {
     });
     return res.redirect("/");
   } catch (error) {
+    console.log(error);
     // 에러나면 다시 upload 페이지 render
     return res.render("upload", {
       pageTitle: "Upload Video",
