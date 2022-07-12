@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 // model의 타입 정의해주기
 const videoSchema = new mongoose.Schema({
   // 입력값을 알아서 대분자로 바꿔줌
@@ -19,9 +20,9 @@ const videoSchema = new mongoose.Schema({
   },
 });
 
-// save middleware
-videoSchema.pre("save", async function () {
-  this.hashtags = this.hashtags[0]
+// hashtags 처리 static
+videoSchema.static("formatHashtags", function (hashtags) {
+  return hashtags
     .split(",")
     .map((word) => (word.startsWith("#") ? word : `#${word}`));
 });
