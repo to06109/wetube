@@ -1,4 +1,5 @@
 import User from "../models/User";
+import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -19,18 +20,53 @@ export const postJoin = async (req, res) => {
       errorMessage: "This username/email is already taken.",
     });
   }
-
-  await User.create({
-    name,
-    username,
-    email,
-    password,
-    location,
-  });
-  return res.redirect("/login");
+  // 에러처리
+  try {
+    await User.create({
+      name,
+      username,
+      email,
+      password,
+      location,
+    });
+    return res.redirect("/login");
+  } catch (error) {
+    console.log(error);
+    // 에러나면 다시 join 페이지 render
+    return res.status(400).render("join", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message, // upload 화면에 errorMessage 띄워주기
+    });
+  }
 };
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
-export const login = (req, res) => res.send("Login");
+
+export const getLogin = (req, res) =>
+  res.render("login", { pageTitle: "Login" });
+
+export const postLogin = async (req, res) => {
+  const { username, password } = req.body;
+  const pageTitle = "Login";
+  const user = await User.findOne({ username });
+  // check if account exists
+  if (!user) {
+    return res.status(404).render("login", {
+      pageTitle,
+      errorMessage: "An account with this username does not exists.",
+    });
+  }
+  // check if password correct
+  // (user가 입력한 password, DB에 있는 password)
+  const ok = await bcrypt.compare(password, user.password);
+  if (!ok) {
+    return res.status(404).render("login", {
+      pageTitle,
+      errorMessage: "Wrong password",
+    });
+  }
+  // success login!
+  return res.redirect("/");
+};
 export const logout = (req, res) => res.send("Logout");
 export const see = (req, res) => res.send("See User");
