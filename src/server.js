@@ -1,7 +1,7 @@
 // server와 관련된 일만 하는 파일
 import express from "express";
 import morgan from "morgan";
-import globalRouter from "./routers/globalRouter";
+import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
@@ -15,7 +15,7 @@ app.use(logger); // 미들웨어
 app.use(express.urlencoded({ extended: true })); // 바디 파싱 미들웨어
 
 // Use routers
-app.use("/", globalRouter);
+app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
