@@ -66,6 +66,8 @@ export const postLogin = async (req, res) => {
     });
   }
   // success login!
+  req.session.loggedIn = true;
+  req.session.user = user; // User info
   return res.redirect("/");
 };
 export const logout = (req, res) => res.send("Logout");
