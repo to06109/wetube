@@ -5,6 +5,7 @@ import session from "express-session";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import { localsMiddleware } from "./middlewares";
 
 // Create server
 const app = express();
@@ -25,19 +26,8 @@ app.use(
   })
 );
 
-// check backend session
-app.use((req, res, next) => {
-  req.sessionStore.all((error, sessions) => {
-    console.log(sessions);
-    next();
-  });
-});
-
-app.get("/add-one", (req, res, next) => {
-  // session에 유저 카운트 정보 추가
-  req.session.potato += 1;
-  return res.send(`${req.session.id} ${req.session.potato}`);
-});
+// middleware
+app.use(localsMiddleware);
 
 // Use routers
 app.use("/", rootRouter);
