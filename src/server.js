@@ -2,6 +2,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -16,13 +17,15 @@ app.set("views", process.cwd() + "/src/views"); // cwd 디폴트값 변경
 app.use(logger); // 미들웨어
 app.use(express.urlencoded({ extended: true })); // 바디 파싱 미들웨어
 
-// init session
+// init session middleware
 app.use(
   session({
     secret: "Hello!",
     // 오류 해결
     resave: true,
     saveUninitialized: true,
+    // 세션 담을 저장소DB 연결
+    store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/wetube" }),
   })
 );
 
