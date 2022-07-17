@@ -21,9 +21,9 @@ app.use(express.urlencoded({ extended: true })); // 바디 파싱 미들웨어
 app.use(
   session({
     secret: "Hello!",
-    // 오류 해결
-    resave: true,
-    saveUninitialized: true,
+    // 로그인했을 때만 세션을 DB에 저장
+    resave: false,
+    saveUninitialized: false,
     // 세션 담을 저장소DB 연결
     store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/wetube" }),
   })
