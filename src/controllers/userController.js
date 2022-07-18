@@ -73,7 +73,7 @@ export const startGithubLogin = (req, res) => {
   const baseUrl = "https://github.com/login/oauth/authorize";
   // 깃허브 요청 객체
   const config = {
-    client_id: "6f05ce699e8b76665128",
+    client_id: process.env.GH_CLIENT,
     allow_signup: false,
     scope: "read:user user:email",
   };
@@ -83,7 +83,25 @@ export const startGithubLogin = (req, res) => {
   return res.redirect(finalUrl);
 };
 
-export const finishGithubLogin = (req, res) => {};
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/access_token";
+  // 필요한 파라미터 객체
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  // nodejs에서 fetch는 정의되지 않은 함수라서 에러가 나는 상태
+  const data = await fetch(finalUrl, {
+    method: "POST",
+    headers: {
+      Accept: application / json,
+    },
+  });
+  const json = await data.json();
+};
 
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
