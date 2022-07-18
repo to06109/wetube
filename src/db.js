@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // mongoDB에 wetube DB 만들어주기
-mongoose.connect("mongodb://127.0.0.1:27017/wetube", {
+mongoose.connect(process.env.DB_URL, {
   // warning 해결
   useNewUrlParser: true,
   useUnifiedTopology: true,
