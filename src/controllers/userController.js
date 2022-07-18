@@ -69,6 +69,22 @@ export const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 
+export const startGithubLogin = (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/authorize";
+  // 깃허브 요청 객체
+  const config = {
+    client_id: "6f05ce699e8b76665128",
+    allow_signup: false,
+    scope: "read:user user:email",
+  };
+  // url 완성하기 -> UrlSearchParams
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
+};
+
+export const finishGithubLogin = (req, res) => {};
+
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
 export const logout = (req, res) => res.send("Logout");
