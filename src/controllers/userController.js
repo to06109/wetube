@@ -1,5 +1,6 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import fetch from "node-fetch";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -93,14 +94,28 @@ export const finishGithubLogin = async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  // nodejs에서 fetch는 정의되지 않은 함수라서 에러가 나는 상태
-  const data = await fetch(finalUrl, {
-    method: "POST",
-    headers: {
-      Accept: application / json,
-    },
-  });
-  const json = await data.json();
+  // 깃허브에 POST req해서 access token 받기
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    // json에 access_token이 있는 경우, user API에 접근
+    const { access_token } = tokenRequest;
+    const userRequest = await (
+      await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+  } else {
+    return res.redirect("/login");
+  }
 };
 
 export const edit = (req, res) => res.send("Edit User");
