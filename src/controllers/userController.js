@@ -162,7 +162,24 @@ export const getEdit = (req, res) => {
     pageTitle: "Edit Profile",
   });
 };
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    // form으로 받은 수정할 데이터
+    body: { name, email, username, location },
+  } = req;
+
+  // 데이터 업데이트
+  await User.findByIdAndUpdate(_id, {
+    name,
+    email,
+    username,
+    location,
+  });
+  // 세션도 업데이트 해줘야함
+
   return res.render("edit-profile");
 };
 export const logout = (req, res) => {
