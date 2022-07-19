@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   // unique: email과 username은 딱 하나만 존재해야함
   email: { type: String, required: true, unique: true },
+  avartarUrl: String,
   socialOnly: { type: Boolean, default: false }, // 깃허브로 로그인 여부 파악 위함
   username: { type: String, required: true, unique: true },
   password: { type: String },
