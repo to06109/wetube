@@ -171,16 +171,31 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location },
   } = req;
 
-  // 데이터 업데이트
-  await User.findByIdAndUpdate(_id, {
-    name,
-    email,
-    username,
-    location,
-  });
-  // 세션도 업데이트 해줘야함
+  if (email !== req.session.email || username !== req.session.username) {
+    // 중복 이메일이나 username 있는지 확인
+    const exists = await User.exists({ $or: [{ username }, { email }] });
+    if (exists) {
+      return res.status(400).render("edit-profile", {
+        errorMessage: "This username/email is already taken",
+      });
+    }
+  }
 
-  return res.render("edit-profile");
+  // 데이터 업데이트
+  const updateUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  // 세션도 업데이트 해줘야함
+  req.session.user = updateUser;
+
+  return res.redirect("/users/edit");
 };
 export const logout = (req, res) => {
   // session을 끝내주기
