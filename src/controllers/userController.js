@@ -94,7 +94,7 @@ export const finishGithubLogin = async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  // 깃허브에 POST req해서 access token 받기
+  // 깃허브에서 준 코드로 access token 받기
   const tokenRequest = await (
     await fetch(finalUrl, {
       method: "POST",
@@ -106,13 +106,32 @@ export const finishGithubLogin = async (req, res) => {
   if ("access_token" in tokenRequest) {
     // json에 access_token이 있는 경우, user API에 접근
     const { access_token } = tokenRequest;
-    const userRequest = await (
-      await fetch("https://api.github.com/user", {
+    const apiUrl = "https://api.github.com";
+    // user 정보를 받음
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
         headers: {
           Authorization: `token ${access_token}`,
         },
       })
     ).json();
+
+    // email 정보를 받음
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token${access_token}`,
+        },
+      })
+    ).json();
+
+    // email 중에 primary와 verified가 모두 true인 이메일 찾기
+    const email = emailData.find((email) => {
+      email.primary === true && email.verified === true;
+    });
+    if (!email) {
+      return res.render("/login");
+    }
   } else {
     return res.redirect("/login");
   }
