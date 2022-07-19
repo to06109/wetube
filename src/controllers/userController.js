@@ -85,8 +85,8 @@ export const startGithubLogin = (req, res) => {
 };
 
 export const finishGithubLogin = async (req, res) => {
+  // 깃허브에서 준 코드로 access token 받기
   const baseUrl = "https://github.com/login/oauth/access_token";
-  // 필요한 파라미터 객체
   const config = {
     client_id: process.env.GH_CLIENT,
     client_secret: process.env.GH_SECRET,
@@ -94,7 +94,7 @@ export const finishGithubLogin = async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  // 깃허브에서 준 코드로 access token 받기
+
   const tokenRequest = await (
     await fetch(finalUrl, {
       method: "POST",
@@ -103,8 +103,9 @@ export const finishGithubLogin = async (req, res) => {
       },
     })
   ).json();
+
+  // json에 access_token이 있는 경우, user API에 접근
   if ("access_token" in tokenRequest) {
-    // json에 access_token이 있는 경우, user API에 접근
     const { access_token } = tokenRequest;
     const apiUrl = "https://api.github.com";
     // user 정보를 받음
@@ -120,17 +121,40 @@ export const finishGithubLogin = async (req, res) => {
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
-          Authorization: `token${access_token}`,
+          Authorization: `token ${access_token}`,
         },
       })
     ).json();
 
     // email 중에 primary와 verified가 모두 true인 이메일 찾기
-    const email = emailData.find((email) => {
-      email.primary === true && email.verified === true;
-    });
-    if (!email) {
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!emailObj) {
       return res.render("/login");
+    }
+
+    // DB에서 동일한 email 가진 user 찾기
+    const existingUser = await User.findOne({ email: emailObj.email });
+    if (existingUser) {
+      // 있다면 success login!
+      req.session.loggedIn = true;
+      req.session.user = existingUser; // User info
+      return res.redirect("/");
+    } else {
+      // 없다면 create an account
+      const user = await User.create({
+        name: `${userData.name ? userData.name : "null"}`,
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+      // 계정 생성하고 로그인 시키기
+      req.session.loggedIn = true;
+      req.session.user = user;
+      return res.redirect("/");
     }
   } else {
     return res.redirect("/login");
