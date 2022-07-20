@@ -165,26 +165,19 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id },
+      user: { _id, avatarUrl },
     },
     // form으로 받은 수정할 데이터
     body: { name, email, username, location },
+    file,
   } = req;
-
-  if (email !== req.session.email || username !== req.session.username) {
-    // 중복 이메일이나 username 있는지 확인
-    const exists = await User.exists({ $or: [{ username }, { email }] });
-    if (exists) {
-      return res.status(400).render("edit-profile", {
-        errorMessage: "This username/email is already taken",
-      });
-    }
-  }
 
   // 데이터 업데이트
   const updateUser = await User.findByIdAndUpdate(
     _id,
     {
+      // file이 없으면 기존 avatarUrl 유지
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -218,6 +211,7 @@ export const postChangePassword = async (req, res) => {
     },
     body: { oldPassword, newPassword, newPasswordConfirmation },
   } = req;
+
   // 옛날 비밀번호 올바른지 확인
   const ok = await bcrypt.compare(oldPassword, password);
   if (!ok) {
