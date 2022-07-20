@@ -9,6 +9,7 @@ const videoSchema = new mongoose.Schema({
     trim: true,
     maxLength: 80,
   },
+  fileUrl: { type: String, required: true },
   description: { type: String, required: true, trim: true, minLength: 20 },
   // 디폴트값 지정, mongoose가 새로운 video를 생성했을 때만 알아서 실행하게 ()안붙여서 넣어줌
   createdAt: { type: Date, required: true, default: Date.now },
