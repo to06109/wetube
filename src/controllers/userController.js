@@ -235,4 +235,14 @@ export const postChangePassword = async (req, res) => {
   req.session.user.password = user.password;
   return res.redirect("/users/logout"); // logout
 };
-export const see = (req, res) => res.send("See User");
+
+// User Profile
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    // 유저가 없는 경우
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  res.render("users/profile", { pageTitle: `${user.name}의 Profile`, user });
+};
