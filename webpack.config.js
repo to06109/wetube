@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   entry: "./src/client/js/main.js",
   mode: "development",
+  watch: true,
   // css파일 이름 설정
   plugins: [
     new MiniCssExtractPlugin({
@@ -16,6 +17,7 @@ module.exports = {
     // js파일은 js폴더에, css파일은 css폴더에
     filename: "js/main.js",
     path: path.resolve(__dirname, "assets"),
+    clean: true,
   },
   module: {
     rules: [
