@@ -240,16 +240,13 @@ export const postChangePassword = async (req, res) => {
 // User Profile
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate("videos");
   if (!user) {
     // 유저가 없는 경우
     return res.status(404).render("404", { pageTitle: "User not found." });
   }
-  // user의 id를 owner로 가진 video들 찾기
-  const videos = await Video.find({ owner: user._id });
   res.render("users/profile", {
     pageTitle: `${user.name}의 Profile`,
     user,
-    videos,
   });
 };
