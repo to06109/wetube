@@ -1,5 +1,2 @@
-const hello = async () => {
-  alert("hi! its working");
-  const x = await fetch("");
-};
-hello();
+// webpack 이용 예
+alert("hi!");
