@@ -17,7 +17,9 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", async function () {
   // this: create 되는 User객체를 가리킴
   // (암호화 할 데이터, saltRounds)
-  this.password = await bcrypt.hash(this.password, 5);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
