@@ -1,2 +1,2 @@
-// webpack 이용 예
-alert("hi!");
+import "../scss/styles.scss";
+console.log("hi");
