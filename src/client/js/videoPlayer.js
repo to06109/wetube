@@ -2,7 +2,7 @@ const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
 const muteBtn = document.getElementById("mute");
 const time = document.getElementById("time");
-const volume = document.getElementById("volume");
+const volumeRange = document.getElementById("volume");
 
 const handlePlayClick = (e) => {
   // if the video is playing, pause it,
@@ -12,19 +12,18 @@ const handlePlayClick = (e) => {
   } else {
     video.pause();
   }
-};
-// 비디오를 멈추면
-const handlePause = () => {
-  playBtn.innerText = "Play";
-};
-// 비디오를 재생하면
-const handlePlay = () => {
-  playBtn.innerText = "Pause";
+  playBtn.innerText = video.paused ? "Play" : "Pause";
 };
 
-const handleMute = (e) => {};
+const handleMute = (e) => {
+  if (video.muted) {
+    video.muted = false;
+  } else {
+    video.muted = true;
+  }
+  muteBtn.innerText = video.muted ? "Unmute" : "Mute";
+  volumeRange.value = video.muted ? 0 : 1;
+};
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
-video.addEventListener("pause", handlePause);
-video.addEventListener("play", handlePlay);
