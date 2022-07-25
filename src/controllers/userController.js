@@ -240,7 +240,14 @@ export const postChangePassword = async (req, res) => {
 // User Profile
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id).populate("videos");
+  // double populate, user가 올린 비디오정보도 가져오고 유저 정보도 가져오게 하기 위해
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
   if (!user) {
     // 유저가 없는 경우
     return res.status(404).render("404", { pageTitle: "User not found." });
