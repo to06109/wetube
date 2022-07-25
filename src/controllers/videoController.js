@@ -3,7 +3,9 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
   // video 날짜별 내림차순 정렬
-  const videos = await Video.find({}).sort({ createdAt: "desc" });
+  const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner");
   return res.render("home", { pageTitle: "Home", videos });
 };
 
