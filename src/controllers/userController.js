@@ -208,13 +208,14 @@ export const postChangePassword = async (req, res) => {
   // req에서 form 데이터 꺼내기
   const {
     session: {
-      user: { _id, password }, // 현재 로그인된 사용자
+      user: { _id }, // 현재 로그인된 사용자
     },
     body: { oldPassword, newPassword, newPasswordConfirmation },
   } = req;
 
   // 옛날 비밀번호 올바른지 확인
-  const ok = await bcrypt.compare(oldPassword, password);
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password);
   if (!ok) {
     return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
@@ -229,7 +230,6 @@ export const postChangePassword = async (req, res) => {
     });
   }
   // 비밀번호 변경
-  const user = await User.findById(_id);
   user.password = newPassword;
   await user.save(); // pre("save") 작동 -> 그래야 password hash
   // 세션 업데이트

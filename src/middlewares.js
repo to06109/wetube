@@ -11,7 +11,7 @@ export const localsMiddleware = (req, res, next) => {
 export const protectorMiddleware = (req, res, next) => {
   if (req.session.loggedIn) {
     // 로그인 되어있으면 진행하던 request 계속 하게 함
-    next();
+    return next();
   } else {
     // 로그인 안돼있으면 로그인 페이지로 redirect
     return res.redirect("/login");

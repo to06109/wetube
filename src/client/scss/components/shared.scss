@@ -7,3 +7,16 @@
   gap: 50px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+.auth-switch {
+  text-align: center;
+  margin-top: 30px;
+  a {
+    text-decoration: underline; // 링크에 밑줄
+  }
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
