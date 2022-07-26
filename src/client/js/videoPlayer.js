@@ -1,11 +1,16 @@
 const video = document.querySelector("video");
+// element찾기
 const playBtn = document.getElementById("play");
+// element안에서 i 찾기
+const playBtnIcon = playBtn.querySelector("i");
 const muteBtn = document.getElementById("mute");
+const muteBtnIcon = muteBtn.querySelector("i");
 const volumeRange = document.getElementById("volume");
-const currentTime = document.getElementById("currentTime");
+const currenTime = document.getElementById("currenTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreen");
+const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
@@ -24,7 +29,7 @@ const handlePlayClick = (e) => {
   } else {
     video.pause();
   }
-  playBtn.innerText = video.paused ? "Play" : "Pause";
+  playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
 };
 
 const handleMute = (e) => {
@@ -33,8 +38,10 @@ const handleMute = (e) => {
   } else {
     video.muted = true;
   }
-  muteBtn.innerText = video.muted ? "Unmute" : "Mute";
-  volumeRange.value = video.muted ? 0 : 1;
+  muteBtnIcon.classList = video.muted
+    ? "fas fa-volume-mute"
+    : "fas fa-volume-up";
+  volumeRange.value = video.muted ? 0 : volumeValue;
 };
 
 const handleVolumeChange = (event) => {
@@ -51,7 +58,7 @@ const handleVolumeChange = (event) => {
 };
 
 const formatTime = (seconds) =>
-  new Date(seconds * 1000).toISOString().substr(11, 8);
+  new Date(seconds * 1000).toISOString().substr(14, 5);
 
 // 비디오 총 시간 설정
 const handleLoadedMetadata = () => {
@@ -62,7 +69,7 @@ const handleLoadedMetadata = () => {
 
 // 현재 비디오 시간 업데이트
 const handleTimeUpdate = () => {
-  currentTime.innerText = formatTime(Math.floor(video.currentTime));
+  currenTime.innerText = formatTime(Math.floor(video.currentTime));
   timeline.value = Math.floor(video.currentTime);
 };
 
@@ -78,10 +85,10 @@ const handelFullScreen = () => {
   const fullscreen = document.fullscreenElement;
   if (fullscreen) {
     document.exitFullscreen(); // 전체화면 종료
-    fullScreenBtn.innerText = "Enter Full Screen";
+    fullScreenIcon.classList = "fas fa-expand";
   } else {
     videoContainer.requestFullscreen(); // 전체화면
-    fullScreenBtn.innerText = "Exit Full Screen";
+    fullScreenIcon.classList = "fas fa-compress";
   }
 };
 
@@ -113,10 +120,10 @@ const handleMouseLeave = () => {
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("change", handleVolumeChange);
-video.addEventListener("loadedmetadata", handleLoadedMetadata);
+video.addEventListener("loadeddata", handleLoadedMetadata);
 // 동영상 시간이 바뀔때마다 실행
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handelTimelineChange);
 fullScreenBtn.addEventListener("click", handelFullScreen);
-video.addEventListener("mousemove", handleMouseMove);
-video.addEventListener("mouseleave", handleMouseLeave);
+videoContainer.addEventListener("mousemove", handleMouseMove);
+videoContainer.addEventListener("mouseleave", handleMouseLeave);
