@@ -10,6 +10,7 @@ const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
 let controlsTimeout = null;
+let constrolsMovementTimeout = null;
 let volumeValue = 0.5; // 볼륨이 바뀔때마다 업데이트
 
 // volume default
@@ -84,20 +85,29 @@ const handelFullScreen = () => {
   }
 };
 
+const hideControls = () => videoControls.classList.remove("showing");
+
 const handleMouseMove = () => {
   // 3초 지나기 전에 마우스 다시들어오면 controlsTimeout 초기화
   if (controlsTimeout) {
     clearTimeout(controlsTimeout);
     controlsTimeout = null;
   }
+
+  // 비디오에서 마우스 멈추면 컨트롤러 숨기기
+  // 오래된 timeout은 취소
+  if (constrolsMovementTimeout) {
+    clearTimeout(constrolsMovementTimeout);
+    constrolsMovementTimeout = null;
+  }
+  // 새로운 timeout 만듬
   videoControls.classList.add("showing");
+  constrolsMovementTimeout = setTimeout(hideControls, 3000);
 };
 
 const handleMouseLeave = () => {
   // 나가면 3초 뒤에 사라짐
-  controlsTimeout = setTimeout(() => {
-    videoControls.classList.remove("showing");
-  }, 3000);
+  controlsTimeout = setTimeout(hideControls, 3000);
 };
 
 playBtn.addEventListener("click", handlePlayClick);
