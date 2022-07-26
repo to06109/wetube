@@ -5,6 +5,8 @@ const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
+const fullScreenBtn = document.getElementById("fullScreen");
+const videoContainer = document.getElementById("videoContainer");
 
 let volumeValue = 0.5; // 볼륨이 바뀔때마다 업데이트
 
@@ -69,6 +71,17 @@ const handelTimelineChange = (event) => {
   video.currentTime = value;
 };
 
+const handelFullScreen = () => {
+  const fullscreen = document.fullscreenElement;
+  if (fullscreen) {
+    document.exitFullscreen();
+    fullScreenBtn.innerText = "Enter Full Screen";
+  } else {
+    videoContainer.requestFullscreen();
+    fullScreenBtn.innerText = "Exit Full Screen";
+  }
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("change", handleVolumeChange);
@@ -76,3 +89,4 @@ video.addEventListener("loadedmetadata", handleLoadedMetadata);
 // 동영상 시간이 바뀔때마다 실행
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handelTimelineChange);
+fullScreenBtn.addEventListener("click", handelFullScreen);
