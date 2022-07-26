@@ -1,8 +1,9 @@
 const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
 const muteBtn = document.getElementById("mute");
-const time = document.getElementById("time");
 const volumeRange = document.getElementById("volume");
+const currentTime = document.getElementById("currentTime");
+const totalTime = document.getElementById("totalTime");
 
 let volumeValue = 0.5; // 볼륨이 바뀔때마다 업데이트
 
@@ -43,6 +44,19 @@ const handleVolumeChange = (event) => {
   video.volume = value;
 };
 
+// 비디오 총 시간 설정
+const handleLoadedMetadata = () => {
+  totalTime.innerText = Math.floor(video.duration);
+};
+
+// 현재 비디오 시간 업데이트
+const handleTimeUpdate = () => {
+  currentTime.innerText = Math.floor(video.currentTime);
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("change", handleVolumeChange);
+video.addEventListener("loadedmetadata", handleLoadedMetadata);
+// 동영상 시간이 바뀔때마다 실행
+video.addEventListener("timeupdate", handleTimeUpdate);
