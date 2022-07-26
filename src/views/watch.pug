@@ -3,7 +3,9 @@ extends base.pug
 block content
     div#videoContainer
         video(src="/"+video.fileUrl)
-        div
+        
+        // 컨트롤러
+        div#videoControls
             button#play Play 
             button#mute Mute 
             // 볼륨 바

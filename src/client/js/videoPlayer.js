@@ -7,7 +7,9 @@ const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreen");
 const videoContainer = document.getElementById("videoContainer");
+const videoControls = document.getElementById("videoControls");
 
+let controlsTimeout = null;
 let volumeValue = 0.5; // 볼륨이 바뀔때마다 업데이트
 
 // volume default
@@ -74,12 +76,28 @@ const handelTimelineChange = (event) => {
 const handelFullScreen = () => {
   const fullscreen = document.fullscreenElement;
   if (fullscreen) {
-    document.exitFullscreen();
+    document.exitFullscreen(); // 전체화면 종료
     fullScreenBtn.innerText = "Enter Full Screen";
   } else {
-    videoContainer.requestFullscreen();
+    videoContainer.requestFullscreen(); // 전체화면
     fullScreenBtn.innerText = "Exit Full Screen";
   }
+};
+
+const handleMouseMove = () => {
+  // 3초 지나기 전에 마우스 다시들어오면 controlsTimeout 초기화
+  if (controlsTimeout) {
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  videoControls.classList.add("showing");
+};
+
+const handleMouseLeave = () => {
+  // 나가면 3초 뒤에 사라짐
+  controlsTimeout = setTimeout(() => {
+    videoControls.classList.remove("showing");
+  }, 3000);
 };
 
 playBtn.addEventListener("click", handlePlayClick);
@@ -90,3 +108,5 @@ video.addEventListener("loadedmetadata", handleLoadedMetadata);
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handelTimelineChange);
 fullScreenBtn.addEventListener("click", handelFullScreen);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
