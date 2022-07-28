@@ -1,10 +1,12 @@
 const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 
+// 여러 function에서 공유되는 variables
 let stream;
 let recorder;
 let videoFile;
 
+// 4. 녹화동영상 다운로드
 const handleDownload = () => {
   const a = document.createElement("a");
   a.href = videoFile;
@@ -13,6 +15,7 @@ const handleDownload = () => {
   a.click();
 };
 
+// 3. 녹화종료
 // 녹화버튼 하나이기 때문에 이벤트를 삭제하고 추가하는 식으로 처리
 const handleStop = () => {
   startBtn.innerText = "Download Recording";
@@ -22,6 +25,7 @@ const handleStop = () => {
   recorder.stop();
 };
 
+// 2. 버튼을 누르면 녹화시작
 const handleStart = () => {
   startBtn.innerText = "Stop Recording";
   // 버튼 다시 누르면 handleStop 실행하게
@@ -30,6 +34,8 @@ const handleStart = () => {
 
   // 동영상 녹화
   recorder = new MediaRecorder(stream);
+
+  // 녹화가 멈추면 발생되는 이벤트
   recorder.ondataavailable = (event) => {
     videoFile = URL.createObjectURL(event.data);
     // 미리보기 소스 초기화
@@ -43,6 +49,7 @@ const handleStart = () => {
   recorder.start();
 };
 
+// 1. 사용자 마이크, 카메라에 접근 / 실시간 미리보기
 const init = async () => {
   // 사용자의 실시간 stream 받아오기
   stream = await navigator.mediaDevices.getUserMedia({
@@ -50,6 +57,7 @@ const init = async () => {
     video: true,
   });
   // 받아온 stream을 비디오 element에 넘겨주기
+  // (stream 형식이라서 src가 아닌 srcObject에 넣음)
   video.srcObject = stream;
   // 비디오가 stream을 재생시킴
   video.play();
