@@ -2,12 +2,17 @@ const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 
 let stream;
+let recorder;
+
+const handleDownload = () => {};
 
 // 녹화버튼 하나이기 때문에 이벤트를 삭제하고 추가하는 식으로 처리
 const handleStop = () => {
-  startBtn.innerText = "Start Recording";
+  startBtn.innerText = "Download Recording";
   startBtn.removeEventListener("click", handleStop);
   startBtn.addEventListener("click", handleStart);
+
+  recorder.stop();
 };
 
 const handleStart = () => {
@@ -17,18 +22,18 @@ const handleStart = () => {
   startBtn.addEventListener("click", handleStop);
 
   // 동영상 녹화
-  const recorder = new MediaRecorder(stream);
-  recorder.ondataavailable = (e) => {
-    console.log("recording done");
-    console.log(e);
-    console.log(e.data);
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (event) => {
+    const videoFile = URL.createObjectURL(event.data);
+    // 미리보기 소스 초기화
+    video.srcObject = null;
+    // 녹화한 동영상으로 동영상 대체
+    video.src = videoFile;
+    // 해당 동영상 반복재생
+    video.loop = true;
+    video.play();
   };
-  console.log(recorder);
   recorder.start();
-  console.log(recorder);
-  setTimeout(() => {
-    recorder.stop();
-  }, 10000);
 };
 
 const init = async () => {
