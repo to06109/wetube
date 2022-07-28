@@ -3,14 +3,21 @@ const video = document.getElementById("preview");
 
 let stream;
 let recorder;
+let videoFile;
 
-const handleDownload = () => {};
+const handleDownload = () => {
+  const a = document.createElement("a");
+  a.href = videoFile;
+  a.download = "MyRecording.webm";
+  document.body.appendChild(a);
+  a.click();
+};
 
 // 녹화버튼 하나이기 때문에 이벤트를 삭제하고 추가하는 식으로 처리
 const handleStop = () => {
   startBtn.innerText = "Download Recording";
   startBtn.removeEventListener("click", handleStop);
-  startBtn.addEventListener("click", handleStart);
+  startBtn.addEventListener("click", handleDownload);
 
   recorder.stop();
 };
@@ -24,7 +31,7 @@ const handleStart = () => {
   // 동영상 녹화
   recorder = new MediaRecorder(stream);
   recorder.ondataavailable = (event) => {
-    const videoFile = URL.createObjectURL(event.data);
+    videoFile = URL.createObjectURL(event.data);
     // 미리보기 소스 초기화
     video.srcObject = null;
     // 녹화한 동영상으로 동영상 대체
