@@ -122,6 +122,7 @@ const handleEnded = () => {
   fetch(`/api/videos/${id}/view`, {
     method: "POST",
   });
+  console.log("ended!!");
 };
 
 playBtn.addEventListener("click", handlePlayClick);
