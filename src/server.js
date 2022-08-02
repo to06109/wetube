@@ -15,6 +15,14 @@ const logger = morgan("dev");
 
 app.set("view engine", "pug"); // 퍼그를 뷰엔진으로 설정
 app.set("views", process.cwd() + "/src/views"); // cwd 디폴트값 변경
+
+// 동영상 녹화 시 SharedArrayBuffer 오류 해결
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+
 app.use(logger); // 미들웨어
 app.use(express.urlencoded({ extended: true })); // 바디 파싱 미들웨어
 

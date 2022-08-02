@@ -11,7 +11,10 @@ let videoFile;
 // 4. 녹화동영상 다운로드
 const handleDownload = async () => {
   // ffmpeg 객체 생성
-  const ffmpeg = createFFmpeg({ log: true });
+  const ffmpeg = createFFmpeg({
+    corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
+    log: true,
+  });
   await ffmpeg.load();
 
   // ffmpeg에 "recording.webm" 파일 생성
@@ -21,9 +24,17 @@ const handleDownload = async () => {
   // ffmpeg 명령어 실행 -> 가상 폴더에 인코딩된 "output.mp4" 파일 생김
   await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
 
+  // 인코딩된 파일 불러오기
+  const mp4File = ffmpeg.FS("readFile", "output.mp4");
+
+  // blob 생성
+  const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
+
+  const mp4Url = URL.createObjectURL(mp4Blob);
+
   const a = document.createElement("a");
-  a.href = videoFile;
-  a.download = "MyRecording.webm";
+  a.href = mp4Url;
+  a.download = "MyRecording.mp4";
   document.body.appendChild(a);
   a.click();
 };
