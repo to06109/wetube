@@ -1,3 +1,5 @@
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+
 const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 
@@ -7,7 +9,18 @@ let recorder;
 let videoFile;
 
 // 4. 녹화동영상 다운로드
-const handleDownload = () => {
+const handleDownload = async () => {
+  // ffmpeg 객체 생성
+  const ffmpeg = createFFmpeg({ log: true });
+  await ffmpeg.load();
+
+  // ffmpeg에 "recording.webm" 파일 생성
+  // 파일처리타입, 파일이름, binaryData 함수(fetchFile 이용)
+  ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile));
+
+  // ffmpeg 명령어 실행 -> 가상 폴더에 인코딩된 "output.mp4" 파일 생김
+  await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
+
   const a = document.createElement("a");
   a.href = videoFile;
   a.download = "MyRecording.webm";
@@ -38,6 +51,7 @@ const handleStart = () => {
   // 녹화가 멈추면 발생되는 이벤트
   recorder.ondataavailable = (event) => {
     videoFile = URL.createObjectURL(event.data);
+    console.log(event.data);
     // 미리보기 소스 초기화
     video.srcObject = null;
     // 녹화한 동영상으로 동영상 대체
