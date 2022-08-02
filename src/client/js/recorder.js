@@ -58,6 +58,17 @@ const handleDownload = async () => {
   thumbA.download = "MyThumbnail.jpg";
   document.body.appendChild(thumbA);
   thumbA.click();
+
+  // 파일 삭제(input, output)
+  ffmpeg.FS("unlink", "recording.webm");
+  ffmpeg.FS("unlink", "output.mp4");
+  ffmpeg.FS("unlink", "thumbnail.jpg");
+
+  // URL 삭제
+  // 이 객체를 메모리에서 지우겠다.
+  URL.revokeObjectURL(mp4Url);
+  URL.revokeObjectURL(thumbUrl);
+  URL.revokeObjectURL(videoFile);
 };
 
 // 3. 녹화종료
