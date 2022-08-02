@@ -21,22 +21,43 @@ const handleDownload = async () => {
   // 파일처리타입, 파일이름, binaryData 함수(fetchFile 이용)
   ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile));
 
-  // ffmpeg 명령어 실행 -> 가상 폴더에 인코딩된 "output.mp4" 파일 생김
+  // 영상 인코딩
   await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
+  // 썸네일 생성
+  await ffmpeg.run(
+    "-i",
+    "recording.webm",
+    "-ss",
+    "00:00:01",
+    "-frames:v",
+    "1",
+    "thumbnail.jpg"
+  );
 
-  // 인코딩된 파일 불러오기
+  // 파일 불러오기
   const mp4File = ffmpeg.FS("readFile", "output.mp4");
+  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
 
   // blob 생성
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
+  const thumbBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
 
+  // 파일에 접근하기 위한 url 만들기
   const mp4Url = URL.createObjectURL(mp4Blob);
+  const thumbUrl = URL.createObjectURL(thumbBlob);
 
+  // 파일 download
   const a = document.createElement("a");
   a.href = mp4Url;
   a.download = "MyRecording.mp4";
   document.body.appendChild(a);
   a.click();
+
+  const thumbA = document.createElement("a");
+  thumbA.href = thumbUrl;
+  thumbA.download = "MyThumbnail.jpg";
+  document.body.appendChild(thumbA);
+  thumbA.click();
 };
 
 // 3. 녹화종료
