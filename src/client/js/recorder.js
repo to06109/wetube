@@ -1,6 +1,6 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
-const startBtn = document.getElementById("startBtn");
+const actionBtn = document.getElementById("actionBtn");
 const video = document.getElementById("preview");
 
 // 여러 function에서 공유되는 variables
@@ -8,8 +8,28 @@ let stream;
 let recorder;
 let videoFile;
 
+const files = {
+  input: "recording.webm",
+  output: "output.mp4",
+  thumb: "thumbnail.jpg",
+};
+
+const downloadFile = (fileUrl, fileName) => {
+  // 파일 download
+  const a = document.createElement("a");
+  a.href = fileUrl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+};
+
 // 4. 녹화동영상 다운로드
 const handleDownload = async () => {
+  // 재다운로드 방지
+  actionBtn.removeEventListener("click", handleDownload);
+  actionBtn.innerText = "Transcoding...";
+  actionBtn.disabled = true;
+
   // ffmpeg 객체 생성
   const ffmpeg = createFFmpeg({
     corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
@@ -19,24 +39,24 @@ const handleDownload = async () => {
 
   // ffmpeg에 "recording.webm" 파일 생성
   // 파일처리타입, 파일이름, binaryData 함수(fetchFile 이용)
-  ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile));
+  ffmpeg.FS("writeFile", files.input, await fetchFile(videoFile));
 
   // 영상 인코딩
-  await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
+  await ffmpeg.run("-i", files.input, "-r", "60", files.output);
   // 썸네일 생성
   await ffmpeg.run(
     "-i",
-    "recording.webm",
+    files.input,
     "-ss",
     "00:00:01",
     "-frames:v",
     "1",
-    "thumbnail.jpg"
+    files.thumb
   );
 
   // 파일 불러오기
-  const mp4File = ffmpeg.FS("readFile", "output.mp4");
-  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+  const mp4File = ffmpeg.FS("readFile", files.output);
+  const thumbFile = ffmpeg.FS("readFile", files.thumb);
 
   // blob 생성
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
@@ -47,46 +67,40 @@ const handleDownload = async () => {
   const thumbUrl = URL.createObjectURL(thumbBlob);
 
   // 파일 download
-  const a = document.createElement("a");
-  a.href = mp4Url;
-  a.download = "MyRecording.mp4";
-  document.body.appendChild(a);
-  a.click();
-
-  const thumbA = document.createElement("a");
-  thumbA.href = thumbUrl;
-  thumbA.download = "MyThumbnail.jpg";
-  document.body.appendChild(thumbA);
-  thumbA.click();
+  downloadFile(mp4Url, "MyRecording.mp4");
+  downloadFile(thumbUrl, "MyThumbnail.jpg");
 
   // 파일 삭제(input, output)
-  ffmpeg.FS("unlink", "recording.webm");
-  ffmpeg.FS("unlink", "output.mp4");
-  ffmpeg.FS("unlink", "thumbnail.jpg");
+  ffmpeg.FS("unlink", files.input);
+  ffmpeg.FS("unlink", files.output);
+  ffmpeg.FS("unlink", files.thumb);
 
   // URL 삭제
-  // 이 객체를 메모리에서 지우겠다.
   URL.revokeObjectURL(mp4Url);
   URL.revokeObjectURL(thumbUrl);
   URL.revokeObjectURL(videoFile);
+
+  actionBtn.disabled = false;
+  actionBtn.innerText = "Record Again";
+  actionBtn.addEventListener("click", handleDownload);
 };
 
 // 3. 녹화종료
 // 녹화버튼 하나이기 때문에 이벤트를 삭제하고 추가하는 식으로 처리
 const handleStop = () => {
-  startBtn.innerText = "Download Recording";
-  startBtn.removeEventListener("click", handleStop);
-  startBtn.addEventListener("click", handleDownload);
+  actionBtn.innerText = "Download Recording";
+  actionBtn.removeEventListener("click", handleStop);
+  actionBtn.addEventListener("click", handleDownload);
 
   recorder.stop();
 };
 
 // 2. 버튼을 누르면 녹화시작
 const handleStart = () => {
-  startBtn.innerText = "Stop Recording";
+  actionBtn.innerText = "Stop Recording";
   // 버튼 다시 누르면 handleStop 실행하게
-  startBtn.removeEventListener("click", handleStart);
-  startBtn.addEventListener("click", handleStop);
+  actionBtn.removeEventListener("click", handleStart);
+  actionBtn.addEventListener("click", handleStop);
 
   // 동영상 녹화
   recorder = new MediaRecorder(stream);
@@ -122,4 +136,4 @@ const init = async () => {
 
 init();
 
-startBtn.addEventListener("click", handleStart);
+actionBtn.addEventListener("click", handleStart);
