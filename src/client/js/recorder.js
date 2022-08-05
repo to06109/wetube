@@ -85,22 +85,11 @@ const handleDownload = async () => {
   actionBtn.addEventListener("click", handleDownload);
 };
 
-// 3. 녹화종료
-// 녹화버튼 하나이기 때문에 이벤트를 삭제하고 추가하는 식으로 처리
-const handleStop = () => {
-  actionBtn.innerText = "Download Recording";
-  actionBtn.removeEventListener("click", handleStop);
-  actionBtn.addEventListener("click", handleDownload);
-
-  recorder.stop();
-};
-
 // 2. 버튼을 누르면 녹화시작
 const handleStart = () => {
-  actionBtn.innerText = "Stop Recording";
-  // 버튼 다시 누르면 handleStop 실행하게
+  actionBtn.innerText = "Recording";
+  actionBtn.disabled = true;
   actionBtn.removeEventListener("click", handleStart);
-  actionBtn.addEventListener("click", handleStop);
 
   // 동영상 녹화
   recorder = new MediaRecorder(stream);
@@ -116,8 +105,15 @@ const handleStart = () => {
     // 해당 동영상 반복재생
     video.loop = true;
     video.play();
+    actionBtn.innerText = "Download";
+    actionBtn.disabled = false;
+    actionBtn.addEventListener("click", handleDownload);
   };
   recorder.start();
+  // 3. 5초 뒤에 녹화 종료
+  setTimeout(() => {
+    recorder.stop();
+  }, 5000);
 };
 
 // 1. 사용자 마이크, 카메라에 접근 / 실시간 미리보기
@@ -125,7 +121,10 @@ const init = async () => {
   // 사용자의 실시간 stream 받아오기
   stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
-    video: true,
+    video: {
+      width: 1024,
+      height: 576,
+    },
   });
   // 받아온 stream을 비디오 element에 넘겨주기
   // (stream 형식이라서 src가 아닌 srcObject에 넣음)

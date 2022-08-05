@@ -11,7 +11,7 @@ const videoSchema = new mongoose.Schema({
   },
   fileUrl: { type: String, required: true },
   thumbUrl: { type: String, required: true },
-  description: { type: String, required: true, trim: true, minLength: 20 },
+  description: { type: String, required: true, trim: true, minLength: 2 },
   // 디폴트값 지정, mongoose가 새로운 video를 생성했을 때만 알아서 실행하게 ()안붙여서 넣어줌
   createdAt: { type: Date, required: true, default: Date.now },
   hashtags: [{ type: String, trim: true }], // array 형식
