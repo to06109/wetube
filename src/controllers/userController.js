@@ -200,6 +200,7 @@ export const logout = (req, res) => {
 export const getChangePassword = (req, res) => {
   // 깃헙 로그인 유저는 비밀번호 변경 페이지 못들어오게함
   if (req.session.user.socialOnly === true) {
+    req.flash("error", "Can't change password");
     return res.redirect("/");
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
@@ -232,6 +233,7 @@ export const postChangePassword = async (req, res) => {
   // 비밀번호 변경
   user.password = newPassword;
   await user.save(); // pre("save") 작동 -> 그래야 password hash
+  req.flash("info", "Password updated");
   // 세션 업데이트
   req.session.user.password = user.password;
   return res.redirect("/users/logout"); // logout

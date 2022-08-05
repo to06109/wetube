@@ -52,6 +52,8 @@ export const postEdit = async (req, res) => {
   }
   // 영상 소유주가 아니면 접근불가
   if (String(video.owner) !== String(_id)) {
+    // 로그인 안 된 사용자만 접근할 수 있게 하는 미들웨어
+    req.flash("error", "You are not the owner of the video.");
     // 403: forbidden
     return res.status(403).redirect("/");
   }
