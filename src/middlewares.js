@@ -14,7 +14,7 @@ export const protectorMiddleware = (req, res, next) => {
     return next();
   } else {
     // 로그인 안돼있으면 로그인 페이지로 redirect
-    req.flash("error", "Not authorized");
+    req.flash("error", "Log in first.");
     return res.redirect("/login");
   }
 };

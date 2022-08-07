@@ -194,6 +194,7 @@ export const postEdit = async (req, res) => {
 export const logout = (req, res) => {
   // session을 끝내주기
   req.session.destroy();
+  req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
 
