@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   name: { type: String, required: true },
   location: String,
+  // 한 명의 유저는 여러개의 댓글을 달 수 있음
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" },
+  ],
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "video" }],
 });
 

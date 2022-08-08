@@ -19,6 +19,10 @@ const videoSchema = new mongoose.Schema({
     views: { type: Number, default: 0, required: true },
     rating: { type: Number, default: 0, required: true },
   },
+  // 한 개의 비디오에 여러개의 댓글 달릴 수 있음
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" },
+  ],
   // ObjectId가 User에서 오는 거라는 걸 알려줌
   owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
 });
