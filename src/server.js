@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 
 app.use(logger); // 미들웨어
 app.use(express.urlencoded({ extended: true })); // 바디 파싱 미들웨어
+app.use(express.json()); // fetch 바디 파싱 미들웨어
 
 // init session middleware
 app.use(

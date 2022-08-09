@@ -8,13 +8,19 @@ const handleSubmit = (event) => {
   const text = textarea.value;
   // 어느 동영상 댓글인지 알아야함
   const videoId = videoContainer.dataset.id;
+  if (text === "") {
+    return;
+  }
   // backend POST request
   fetch(`/api/videos/${videoId}/comment`, {
     method: "POST",
-    // req.body에 들어가는거임
-    body: {
-      text,
+    headers: {
+      "Content-Type": "application/json",
     },
+    // req.body에 들어가는거임
+    body: JSON.stringify({
+      text,
+    }),
   });
 };
 
