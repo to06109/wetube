@@ -1,5 +1,7 @@
 import User from "../models/User";
+import Comment from "../models/Comment";
 import Video from "../models/Video";
+import mongoose from "mongoose";
 
 export const home = async (req, res) => {
   // video 날짜별 내림차순 정렬
@@ -148,8 +150,22 @@ export const registerView = async (req, res) => {
   return res.sendStatus(200);
 };
 
-export const createComment = (req, res) => {
-  console.log(req.params);
-  console.log(req.body);
-  return res.end();
+export const createComment = async (req, res) => {
+  const {
+    session: { user },
+    body: { text },
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  // DB에 보낼 댓글 객체
+  const comment = await Comment.create({
+    text,
+    owner: user._id,
+    video: id,
+  });
+  // 201: Created
+  return res.sendStatus(201);
 };
