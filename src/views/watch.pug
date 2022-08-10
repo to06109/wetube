@@ -40,9 +40,9 @@ block content
         a(href=`${video.id}/delete`) Delete Video &rarr;
 
     if loggedIn
-        div.video__comments
+        div.video__comments-form
             form.video__comment-form#commentForm
-                textarea(cols="30", rows="10", placeholder="Write a nice comment...") 
+                textarea(cols="140", rows="5", placeholder="Write a nice comment...") 
                 button Add Comment
     
     div.video__comments
