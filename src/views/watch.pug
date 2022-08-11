@@ -45,13 +45,14 @@ block content
                 textarea(cols="140", rows="5", placeholder="Write a nice comment...") 
                 button Add Comment
     
-    div.video__comments
+    div.video__comments#videoComments
         ul 
             each comment in video.comments.reverse()
-                li.video__comment(data-id=comment.id)
+                li#videoComment.video__comment(data-id=comment.id)
                     i.fas.fa-comment
-                    span #{comment.text}
-                    span ❌
+                    span  #{comment.text}
+                    if String(comment.owner) === String(loggedInUser._id)
+                        span.deleteComment ❌
 
 block scripts 
     script(src="/assets/js/videoPlayer.js")

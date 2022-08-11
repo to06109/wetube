@@ -1,5 +1,27 @@
 const videoContainer = document.getElementById("videoContainer");
+const videoComments = document.getElementById("videoComments");
+const ul = videoComments.querySelector("ul");
+const deleteBtn = ul.querySelectorAll(".deleteComment");
 const form = document.getElementById("commentForm");
+const li = document.getElementById("videoComment");
+
+// delete comment
+const handleDelete = async (event) => {
+  const del_li = event.target.parentElement;
+  const commentId = del_li.dataset.id;
+  const response = await fetch(`/api/comments/${commentId}`, {
+    method: "POST",
+  });
+
+  if (response.status === 200) {
+    del_li.remove();
+  }
+};
+
+// 기존에 있던 댓글 삭제버튼 연동하기
+deleteBtn.forEach(function (item) {
+  item.addEventListener("click", handleDelete);
+});
 
 // fake comment
 const addComment = (text, id) => {
@@ -13,6 +35,7 @@ const addComment = (text, id) => {
   span.innerText = ` ${text}`;
   const span2 = document.createElement("span");
   span2.innerText = "❌";
+  span2.addEventListener("click", handleDelete);
   newComment.appendChild(icon);
   newComment.appendChild(span);
   newComment.appendChild(span2);
@@ -41,11 +64,12 @@ const handleSubmit = async (event) => {
       text,
     }),
   });
-  textarea.value = "";
-  // response 안에서 json 추출
-  const { newCommentId } = await response.json();
   // 댓글 생성 시 fake댓글 작성
   if (response.status === 201) {
+    // 댓글창 비우기
+    textarea.value = "";
+    // response 안에서 json 추출
+    const { newCommentId } = await response.json();
     addComment(text, newCommentId);
   }
 };

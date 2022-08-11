@@ -2,6 +2,7 @@ import User from "../models/User";
 import Comment from "../models/Comment";
 import Video from "../models/Video";
 import mongoose from "mongoose";
+import session from "express-session";
 
 export const home = async (req, res) => {
   // video 날짜별 내림차순 정렬
@@ -15,6 +16,7 @@ export const watch = async (req, res) => {
   const { id } = req.params; // 링크로 id받음
   // id로 video 찾기
   const video = await Video.findById(id).populate("owner").populate("comments");
+  console.log(video);
   if (!video) {
     return res.render("404", { pageTitle: "Video not found" });
   }
@@ -170,4 +172,22 @@ export const createComment = async (req, res) => {
   video.save();
   // 201: Created
   return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const deleteComment = async (req, res) => {
+  const { commentId } = req.params;
+  const {
+    user: { _id },
+  } = req.session;
+  const comment = await Comment.findById(commentId).populate("owner");
+  if (!comment) {
+    return res.status(404).render("404", { pageTitle: "Comment not found" });
+  }
+  // 사용자가 댓글의 작성자인지 확인
+  if (String(comment.owner._id) !== String(_id)) {
+    return res.status(404).render("404", { pageTitle: "forbidden delete" });
+  }
+  // DB에서 댓글 지우기
+  await Comment.findByIdAndDelete(commentId);
+  res.end();
 };
